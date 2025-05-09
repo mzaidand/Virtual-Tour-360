@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UINSSC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(to right, #FFD700, #FFC107); /* Updated gradient to yellow shades */
+      padding: 2rem 0; /* Retained spacious padding */
+      text-align: center;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Retained shadow for depth */
+      border-bottom: 4px solid #FFA000; /* Updated border to match yellow theme */
+    }
+
+    header h1 {
+      font-size: 3rem; /* Increased font size for prominence */
+      color: #FFFFFF; /* Changed text color to white for better contrast */
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Added text shadow for a stylish effect */
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #fffde7;
+      padding: 0.75rem 0;
+      border-bottom: 2px solid #fbc02d;
+    }
+
+    nav a {
+      color: #333;
+      text-decoration: none;
+      margin: 0 1.5rem;
+      font-weight: 600;
+      position: relative;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 0;
+      bottom: -4px;
+      background-color: #f57f17;
+      transition: 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .hero {
+      display: none; /* Hide the hero section */
+      background: linear-gradient(rgba(255, 235, 59, 0.6), rgba(255, 235, 59, 0.6)),
+        url('assets/logouinssc.jpg') center/cover no-repeat;
+      text-align: center;
+      padding: 5rem 2rem;
+      position: relative;
+    }
+
+    .hero h2 {
+      font-size: 2.2rem;
+      color: #212121;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .content {
+      padding: 3rem 2rem;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .content h3 {
+      font-size: 1.8rem;
+      color: #f57f17;
+      margin-bottom: 0.75rem;
+    }
+
+    .content p {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #f57f17;
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      margin: 0.5rem;
+      transition: background-color 0.3s, transform 0.2s;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #e65100;
+      transform: scale(1.05);
+    }
+
+    .iframe-container {
+      display: none; /* Initially hide the iframe */
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .iframe-container iframe {
+      width: 100%;
+      max-width: 1600px;
+      height: 700px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .black-box {
+      position: relative;
+      background-color: white; /* Changed from black to white */
+      width: 100%;
+      max-width: 1600px;
+      height: 700px;
+      margin: 0 auto;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .black-box .logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 200px;
+      z-index: 1;
+    }
+
+    .black-box iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 0;
+    }
+
+    footer {
+      background-color: #fdd835;
+      color: #333;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .hero h2 {
+        font-size: 1.5rem;
+      }
+
+      nav a {
+        margin: 0 0.75rem;
+      }
+
+      .iframe-container iframe {
+        height: 350px;
+        width: 100%;
+      }
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href').substring(1);
+          const target = document.getElementById(targetId);
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 60,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    });
+
+    function startVirtualTour() {
+        const iframe = document.getElementById('virtualTourIframe');
+        const container = document.getElementById('virtualTourContainer');
+        const logo = document.querySelector('.black-box .logo');
+
+        if (!iframe.src || iframe.src !== 'index.html#virtual360') {
+            iframe.src = 'index.html#virtual360'; // Set the iframe source to the virtual 360 section
+            logo.style.display = 'block'; // Ensure the logo is visible initially
+
+            iframe.onload = () => {
+                logo.style.display = 'none'; // Hide the logo once the iframe is fully loaded
+                iframe.dataset.loaded = 'true'; // Mark the iframe as loaded
+            };
+        }
+
+        if (iframe.dataset.loaded === 'true') {
+            logo.style.display = 'none'; // Ensure the logo remains hidden if iframe is already loaded
+        }
+
+        iframe.style.display = 'block'; // Show the iframe
+        container.scrollIntoView({ behavior: 'smooth' }); // Scroll to the iframe container
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Virtual Tour UINSSC</h1>
+  </header>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#virtual">Virtual</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="hero">
+    <h2>Your Gateway to Virtual Exploration</h2>
+  </div>
+
+  <div class="content" id="about">
+    <h3>About UINSSC</h3>
+    <p>UINSSC is a platform that provides immersive virtual tours to explore various locations and experiences.</p>
+  </div>
+
+  <div class="content" id="virtual">
+    <h3>Virtual Tour</h3>
+    <p>Click below to start the virtual tour:</p>
+    <button class="button" onclick="startVirtualTour()">Start Virtual Tour</button>
+    <div class="iframe-container" id="virtualTourContainer">
+        <div class="black-box">
+            <img src="assets/logouinssc.jpg" alt="UINSSC Logo" class="logo" />
+            <iframe id="virtualTourIframe" style="display: none;" title="Virtual Tour"></iframe>
+        </div>
+    </div>
+  </div>
+
+  <div class="content" id="contact">
+    <h3>Contact Us</h3>
+    <p>Email: contact@uinssc.com | Phone: +62 123 456 789</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 UINSSC. All rights reserved.</p>
+  </footer>
+</body>
+</html>
