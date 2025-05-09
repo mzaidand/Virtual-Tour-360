@@ -1,346 +1,279 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Magang</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=0.5, width=device-width, viewport-fit=cover" />
-    <link rel="preload" href="script.js?v=1746763456038" as="script"/>
-<link rel="preload" href="media/panorama_A68D892E_ADE2_F792_41E2_7F9CB0696A85_0/l/2/0_0.jpg?v=1746763456038" as="image"/>
-<link rel="preload" href="media/panorama_A68D892E_ADE2_F792_41E2_7F9CB0696A85_0/r/2/0_0.jpg?v=1746763456038" as="image"/>
-<link rel="preload" href="media/panorama_A68D892E_ADE2_F792_41E2_7F9CB0696A85_0/u/2/0_0.jpg?v=1746763456038" as="image"/>
-<link rel="preload" href="media/panorama_A68D892E_ADE2_F792_41E2_7F9CB0696A85_0/d/2/0_0.jpg?v=1746763456038" as="image"/>
-<link rel="preload" href="media/panorama_A68D892E_ADE2_F792_41E2_7F9CB0696A85_0/f/2/0_0.jpg?v=1746763456038" as="image"/>
-<link rel="preload" href="media/panorama_A68D892E_ADE2_F792_41E2_7F9CB0696A85_0/b/2/0_0.jpg?v=1746763456038" as="image"/>
-<script>(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create", "UA-116087-3", "auto"); ga("send", "pageview");</script>
-<meta name="description" content="Virtual Tour"/>
-<meta name="theme-color" content="#FFFFFF"/>
-    <script src="lib/tdvplayer.js?v=1746763456038"></script>
-    <script type="text/javascript">
-        var player;
-        var playersPlayingTmp = [];
-        var isInitialized = false;
-        var isPaused = false;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UINSSC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
 
-        function loadTour()
-        {
-            if(player)
-                return;
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
 
-            var beginFunc = function(event){
-                if(event.name == 'begin')
-                {
-                    var camera = event.data.source.get('camera');
-                    if(camera && camera.get('initialSequence') && camera.get('initialSequence').get('movements').length > 0)
-                        return;
-                }
+    header {
+      background: linear-gradient(to right, #FFD700, #FFC107); /* Updated gradient to yellow shades */
+      padding: 2rem 0; /* Retained spacious padding */
+      text-align: center;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Retained shadow for depth */
+      border-bottom: 4px solid #FFA000; /* Updated border to match yellow theme */
+    }
 
-                if(event.sourceClassName == "MediaAudio")
-                    return;
+    header h1 {
+      font-size: 3rem; /* Increased font size for prominence */
+      color: #FFFFFF; /* Changed text color to white for better contrast */
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Added text shadow for a stylish effect */
+    }
 
-                isInitialized = true;
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #fffde7;
+      padding: 0.75rem 0;
+      border-bottom: 2px solid #fbc02d;
+    }
 
-                player.unbind('preloadMediaShow', beginFunc, player, true);
-                player.unbindOnObjectsOf('PanoramaPlayListItem', 'begin', beginFunc, player, true);
-                player.unbind('stateChange', beginFunc, player, true);
-                window.parent.postMessage("tourLoaded", '*');
+    nav a {
+      color: #333;
+      text-decoration: none;
+      margin: 0 1.5rem;
+      font-weight: 600;
+      position: relative;
+    }
 
-                disposePreloader();
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 0;
+      bottom: -4px;
+      background-color: #f57f17;
+      transition: 0.3s;
+    }
 
-                onVirtualTourLoaded();
-            };
+    nav a:hover::after {
+      width: 100%;
+    }
 
-            var settings = new TDV.PlayerSettings();
-            
-            settings.set(TDV.PlayerSettings.CONTAINER, document.getElementById('viewer'));
-            settings.set(TDV.PlayerSettings.SCRIPT_URL, 'script.js?v=1746763456038');
-            settings.set(TDV.PlayerSettings.WEBVR_POLYFILL_URL, 'lib/WebVRPolyfill.js?v=1746763456038');
-            settings.set(TDV.PlayerSettings.HLS_URL, 'lib/Hls.js?v=1746763456038');
-            settings.set(TDV.PlayerSettings.QUERY_STRING_PARAMETERS, 'v=1746763456038');
-            window.tdvplayer = player = TDV.PlayerAPI.create(settings);
-            player.bind('preloadMediaShow', beginFunc, player, true);
-            player.bind('stateChange', beginFunc, player, true);
-            player.bindOnObjectsOf('PanoramaPlayListItem', 'begin', beginFunc, player, true);
-            player.bindOnObject('rootPlayer', 'start', function(e){
-                var queryDict = {}; location.search.substr(1).split("&").forEach(function(item) {var k = item.split("=")[0], v = decodeURIComponent(item.split("=")[1]);queryDict[k] = v});
-                var item = undefined;
-                if("media-index" in queryDict){
-                    item = setMediaByIndex(parseInt(queryDict["media-index"]) - 1);
-                }
-                else if("media-name" in queryDict){
-                    item = setMediaByName(queryDict["media-name"]);
-                }
-                else{
-                    item = setMediaByIndex(0);
-                }
-                if(item != undefined && "trigger-overlay-name" in queryDict){
-                    triggerOverlayByName(item, queryDict["trigger-overlay-name"], "trigger-overlay-event" in queryDict ? queryDict["trigger-overlay-event"] : "click");
-                }
+    .hero {
+      display: none; /* Hide the hero section */
+      background: linear-gradient(rgba(255, 235, 59, 0.6), rgba(255, 235, 59, 0.6)),
+        url('assets/logouinssc.jpg') center/cover no-repeat;
+      text-align: center;
+      padding: 5rem 2rem;
+      position: relative;
+    }
 
-                player.getById('rootPlayer').bind('tourEnded', function(){
-                    onVirtualTourEnded();
-                }, player, true);
-            }, player, false);
+    .hero h2 {
+      font-size: 2.2rem;
+      color: #212121;
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-            /* Listen messages */
-            window.addEventListener('message', function (e) {
-                //Listen to messages for make actions to player in the format function:param1,param2
-                var action = e.data;
-                if (action == 'pauseTour' || action == 'resumeTour') {
-                    this[action].apply(this);
-                }
+    .content {
+      padding: 3rem 2rem;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .content h3 {
+      font-size: 1.8rem;
+      color: #f57f17;
+      margin-bottom: 0.75rem;
+    }
+
+    .content p {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #f57f17;
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      margin: 0.5rem;
+      transition: background-color 0.3s, transform 0.2s;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #e65100;
+      transform: scale(1.05);
+    }
+
+    .iframe-container {
+      display: none; /* Initially hide the iframe */
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .iframe-container iframe {
+      width: 100%;
+      max-width: 1600px;
+      height: 700px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .black-box {
+      position: relative;
+      background-color: white; /* Changed from black to white */
+      width: 100%;
+      max-width: 1600px;
+      height: 700px;
+      margin: 0 auto;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .black-box .logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 200px;
+      z-index: 1;
+    }
+
+    .black-box iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 0;
+    }
+
+    footer {
+      background-color: #fdd835;
+      color: #333;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .hero h2 {
+        font-size: 1.5rem;
+      }
+
+      nav a {
+        margin: 0 0.75rem;
+      }
+
+      .iframe-container iframe {
+        height: 350px;
+        width: 100%;
+      }
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href').substring(1);
+          const target = document.getElementById(targetId);
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 60,
+              behavior: 'smooth'
             });
+          }
+        });
+      });
+    });
+
+    function startVirtualTour() {
+        const iframe = document.getElementById('virtualTourIframe');
+        const container = document.getElementById('virtualTourContainer');
+        const logo = document.querySelector('.black-box .logo');
+
+        if (!iframe.src || iframe.src !== 'virtual.html#virtual360') {
+            iframe.src = 'virtual.html#virtual360'; // Set the iframe source to the virtual 360 section
+            logo.style.display = 'block'; // Ensure the logo is visible initially
+
+            iframe.onload = () => {
+                logo.style.display = 'none'; // Hide the logo once the iframe is fully loaded
+                iframe.dataset.loaded = 'true'; // Mark the iframe as loaded
+            };
         }
 
-        function pauseTour()
-        {
-            isPaused = true;
-            if(!isInitialized)
-                return;
-
-            var playLists = player.getByClassName('PlayList');
-            for(var i = 0, count = playLists.length; i<count; i++)
-            {
-                var playList = playLists[i];
-                var index = playList.get('selectedIndex');
-                if(index != -1)
-                {
-                    var item = playList.get('items')[index];
-                    var itemPlayer = item.get('player');
-                    if(itemPlayer && itemPlayer.pause)
-                    {
-                        playersPlayingTmp.push(itemPlayer);
-                        itemPlayer.pause();
-                    }
-                }
-            }
-
-            player.getById('pauseGlobalAudios')();
+        if (iframe.dataset.loaded === 'true') {
+            logo.style.display = 'none'; // Ensure the logo remains hidden if iframe is already loaded
         }
 
-        function resumeTour()
-        {
-            isPaused = false;
-            if(!isInitialized)
-                return;
-
-            while(playersPlayingTmp.length)
-            {
-                var viewer = playersPlayingTmp.pop();
-                viewer.play();
-            }
-
-            player.getById('resumeGlobalAudios')();
-        }
-
-        function onVirtualTourLoaded()
-        {
-            if(isPaused)
-                pauseTour();
-        }
-
-        function onVirtualTourEnded()
-        {
-
-        }
-
-        function getRootPlayer()
-        {
-            return window.tdvplayer !== undefined ? window.tdvplayer.getById('rootPlayer') : undefined;
-        }
-
-        function setMediaByIndex(index)
-        {
-            var rootPlayer = getRootPlayer();
-            if(rootPlayer !== undefined) {
-                return rootPlayer.setMainMediaByIndex(index);
-            }
-        }
-
-        function setMediaByName(name)
-        {
-            var rootPlayer = getRootPlayer();
-            if(rootPlayer !== undefined) {
-                return rootPlayer.setMainMediaByName(name);
-            }
-        }
-
-        function triggerOverlayByName(item, name, eventName)
-        {
-            var rootPlayer = getRootPlayer();
-            if(rootPlayer !== undefined) {
-                item.bind('begin', function(e){
-                    item.unbind('begin', arguments.callee, this);
-                    var overlay = rootPlayer.getPanoramaOverlayByName(item.get('media'), name);
-                    if(overlay)
-                        rootPlayer.triggerOverlay(overlay, eventName);
-                }, rootPlayer);
-            }
-        }
-
-        function showPreloader()
-        {
-            var preloadContainer = document.getElementById('preloadContainer');
-            if(preloadContainer != undefined)
-                preloadContainer.style.opacity = 1;
-        }
-
-        function disposePreloader()
-        {
-            var preloadContainer = document.getElementById('preloadContainer');
-            if(preloadContainer == undefined)
-                return;
-
-            var transitionEndName = transitionEndEventName();
-            if(transitionEndName)
-            {
-                preloadContainer.addEventListener(transitionEndName, hide, false);
-                preloadContainer.style.opacity = 0;
-                setTimeout(hide, 500); //Force hide. Some cases the transitionend event isn't dispatched with an iFrame.
-            }
-            else
-            {
-                hide();
-            }
-
-            function hide()
-            {
-                
-                preloadContainer.style.visibility = 'hidden';
-                preloadContainer.style.display = 'none';
-            }
-
-            function transitionEndEventName () {
-                var el = document.createElement('div');
-                var transitions = {
-                        'transition':'transitionend',
-                        'OTransition':'otransitionend',
-                        'MozTransition':'transitionend',
-                        'WebkitTransition':'webkitTransitionEnd'
-                    };
-
-                var t;
-                for (t in transitions) {
-                    if (el.style[t] !== undefined) {
-                        return transitions[t];
-                    }
-                }
-
-                return undefined;
-            }
-        }
-
-        function onBodyClick(){
-            document.body.removeEventListener("click", onBodyClick);
-            document.body.removeEventListener("touchend", onBodyClick);
-            loadTour();
-        }
-
-        function onLoad() {
-            if (/AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent))
-            {
-                var inIFrame = false;
-                try
-                {
-                    inIFrame = (window.self !== window.top);
-                }
-                catch (e)
-                {
-                    inIFrame = true;
-                }
-                if (!inIFrame)
-                {
-                    var onResize = function(async)
-                    {
-                        [0, 250, 1000, 2000].forEach(function(delay)
-                        {
-                            setTimeout(function()
-                            {
-                                var viewer = document.querySelector('#viewer');
-                                var scale = window.innerWidth / document.documentElement.clientWidth;
-                                var width = document.documentElement.clientWidth;
-                                var height = Math.round(window.innerHeight / scale);
-                                viewer.style.width = width + 'px';
-                                viewer.style.height = height + 'px';
-                                viewer.style.left = Math.round((window.innerWidth - width) * 0.5) + 'px';
-                                viewer.style.top = Math.round((window.innerHeight - height) * 0.5) + 'px';
-                                viewer.style.transform = 'scale(' + scale + ', ' + scale + ')';
-                                window.scrollTo(0,0);
-                            }, delay);
-                        });
-                    };
-                    window.addEventListener('resize', onResize);
-                    onResize();
-                }
-            }
-
-
-            if (isOVRWeb()){
-                showPreloader();
-                loadTour();
-                return;
-            }
-
-            showPreloader();
-loadTour()
-        }
-
-        function playVideo(video) {
-            function isSafariDesktopV11orGreater() {
-                return /^((?!chrome|android|crios|ipad|iphone).)*safari/i.test(navigator.userAgent) && parseFloat(/Version\/([0-9]+\.[0-9]+)/i.exec(navigator.userAgent)[1]) >= 11;
-            }
-
-            function detectUserAction() {
-                var onVideoClick = function(e) {
-                    if(video.paused) {
-                        video.play();
-                    }
-                    video.muted = false;
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                    video.removeEventListener('click', onVideoClick);
-                    video.removeEventListener('touchend', onVideoClick);
-                };
-                video.addEventListener("click", onVideoClick);
-                video.addEventListener("touchend", onVideoClick);
-            }
-
-            if (isSafariDesktopV11orGreater()) {
-                video.muted = true;
-                video.play();
-            } else {
-                var canPlay = true;
-                var promise = video.play();
-                if (promise) {
-                    promise.catch(function() {
-                        video.muted = true;
-                        video.play();
-                        detectUserAction();
-                    });
-                } else {
-                    canPlay = false;
-                }
-
-                if (!canPlay || video.muted) {
-                    detectUserAction();
-                }
-            }
-        }
-
-        function isOVRWeb(){
-            return window.location.hash.substring(1).split('&').indexOf('ovrweb') > -1;
-        }
-    </script>
-    <style type="text/css">
-        html, body { width: 100%; height: 100%; margin: 0; padding: 0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
-
-        #viewer { background-color: #FFFFFF; z-index:1; position:absolute; width: 100%; height: 100%; top: 0; }
-        #preloadContainer { z-index:2; position:relative; width:100%; height:100%; transition: opacity 0.5s; -webkit-transition: opacity 0.5s; -moz-transition: opacity 0.5s; -o-transition: opacity 0.5s;}
-    </style>
-    
+        iframe.style.display = 'block'; // Show the iframe
+        container.scrollIntoView({ behavior: 'smooth' }); // Scroll to the iframe container
+    }
+  </script>
 </head>
-<body onload="onLoad()">
-    <div id="preloadContainer" style="background-color:rgba(255,255,255,1)"><div style="z-index: 4; position: absolute; left: 0%; top: 50%; width: 100.00%; height: 10.00%"><div style="text-align:left; color:#000; "><DIV STYLE="text-align:center;"><SPAN STYLE="letter-spacing:0vmin;color:#777777;font-size:1.34vmin;font-family:Arial, Helvetica, sans-serif;">Loading virtual tour. Please wait...</SPAN></DIV><p STYLE="margin:0; line-height:1.04vmin;"><BR STYLE="letter-spacing:0vmin;color:#000000;font-size:1.04vmin;font-family:Arial, Helvetica, sans-serif;"/></p></div></div></div>
-    <div id="viewer"></div>
+<body>
+  <header>
+    <h1>Welcome to Virtual Tour UINSSC</h1>
+  </header>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#virtual">Virtual</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="hero">
+    <h2>Your Gateway to Virtual Exploration</h2>
+  </div>
+
+  <div class="content" id="about">
+    <h3>About UINSSC</h3>
+    <p>UINSSC is a platform that provides immersive virtual tours to explore various locations and experiences.</p>
+  </div>
+
+  <div class="content" id="virtual">
+    <h3>Virtual Tour</h3>
+    <p>Click below to start the virtual tour:</p>
+    <button class="button" onclick="startVirtualTour()">Start Virtual Tour</button>
+    <div class="iframe-container" id="virtualTourContainer">
+        <div class="black-box">
+            <img src="assets/logouinssc.jpg" alt="UINSSC Logo" class="logo" />
+            <iframe id="virtualTourIframe" style="display: none;" title="Virtual Tour"></iframe>
+        </div>
+    </div>
+  </div>
+
+  <div class="content" id="contact">
+    <h3>Contact Us</h3>
+    <p>Email: contact@uinssc.com | Phone: +62 123 456 789</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 UINSSC. All rights reserved.</p>
+  </footer>
 </body>
 </html>
